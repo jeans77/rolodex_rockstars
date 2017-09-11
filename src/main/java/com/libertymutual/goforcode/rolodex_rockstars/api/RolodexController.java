@@ -55,13 +55,13 @@ public class RolodexController {
 		List<PhoneNumber> phoneNumber = card.getPhoneNumbers();
 		List<Address> address = card.getAddresses(); 
 
-		if (card.getPhoneNumbers().get(0).getNumber() != "") {
+		if (card.getPhoneNumbers() != null && card.getPhoneNumbers().get(0).getNumber() != "") {
 			System.out.println(card.getPhoneNumbers());
 			phoneNumber.get(0).addCardToPhoneNumber(card);
 			phoneRepo.save(phoneNumber);
 		}
 
-		if (card.getAddresses().get(0).getStreet() != "") {
+		if (card.getAddresses() != null && card.getAddresses().get(0).getStreet() != "") {
 			address.get(0).addCardToAddress(card);
 			addressRepo.save(address);
 		}
