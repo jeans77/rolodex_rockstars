@@ -2,40 +2,44 @@ const baseurl = 'http://localhost:8080/cards';
 
 function fillInDetails(data) {
 	let html = `
-		<h1>${data.lastName} ${data.firstName}</h1>
-		<h2>${data.company}</h2>
-		<div>Title: ${data.title}</div>
+		<b>LastName: ${data.lastName}</b>
+		<b>FirstName: ${data.firstName}</b>
+		<b>Company: ${data.company}</b>
+		<b>Title: ${data.title}</b>
+
 	`;
 	
 	for (let phone of data.phoneNumbers) {
 		html += `
 			<div>
+				<br>
 				<b>${phone.type}</b>
-				<div>${phone.number}</div>
+				<b>${phone.number}</b>
 			
 				<form class="delete-phone-form" method="post" action="/cards/${data.id}/phone/${phone.id}">
 					<button>Delete Phone</button
 				</form>
+				
 			</div>
 		`;
 	}
 	
 	html +=`
-	
 			<form id="create-phone-form" method="post" action="/cards/${data.id}/phone">
+				<br>
 				<input name="type" id="type">
 				<br>
-				<input required name="number" id="number" placeholder="###-###-###">
+				<input required name="number" id="number">
 				<br>
-				<button>Add this Phone Number</button>
-			</form>
-			
+				<button>Add Phone</button>
+			</form>	
 	`;
 	
 	
 	for (let address of data.addresses) {
 		html += `
 			<div>
+				<br>
 				<b>${address.type}</b>
 				<b>${address.street}</b>
 				<b>${address.city}</b>
@@ -53,6 +57,7 @@ function fillInDetails(data) {
 		
 		html += `
 			<form id="create-address-form" method="post" action="/cards/${data.id}/address">
+				<br>
 				<input name="type" id="type">
 				<br>
 				<input required name="street" id="street">
@@ -63,7 +68,7 @@ function fillInDetails(data) {
 				<br>
 				<input required name="zipCode" id="zipCode">
 				<br>
-				<button>Add this Address</button>
+				<button>Add Address</button>
 			</form>
 			
 	`;
@@ -72,6 +77,7 @@ function fillInDetails(data) {
 
 	
 }
+
 function createListElement(card) {
 	
 	$('<li></li>')
@@ -89,53 +95,10 @@ function createListElement(card) {
 	
 }
 
-$(document).on('submit', '.delete-card-form', function (e) {
-	e.preventDefault();
-	
-	$.ajax(this.action, { type: 'DELETE' })
-		.done(() => {
-			$(this)
-				.closest('li')
-				.remove();
-		})
-		
-		.fail(error => console.error(error));
-});
-
-$(document).on('submit', '.delete-phone-form', function (e) {
-	e.preventDefault();
-	
-	$.ajax(this.action, { type: 'DELETE' })
-		.done(() => {
-			$(this)
-				.closest('div')
-				.remove();
-		})
-		
-		.fail(error => console.error(error));
-});
-
-$(document).on('submit', '.delete-address-form', function (e) {
-	e.preventDefault();
-	
-	$.ajax(this.action, { type: 'DELETE' })
-		.done(() => {
-			$(this)
-				.closest('div')
-				.remove();
-		})
-		
-		.fail(error => console.error(error));
-});
-
 $('#create-card-form').on('submit', function (e) {
 	
-	//to prevent the default from submitting as JSON
 	e.preventDefault();
-//	console.log(e);
-	
-// Get the value for each element and build an object to send to JS
-	
+
 	let payload = {
 			firstName: $('#firstName').val(),
 			lastName: $('#lastName').val(),
@@ -151,20 +114,28 @@ $('#create-card-form').on('submit', function (e) {
 			contentType: 'application/json'
 	};
 	
-//	console.log(this.action);
-//	console.log(payload);
-	
 	$.ajax(this.action, ajaxOptions)
 		.done(function (card) {
 			createListElement(card);
 			
 		})
-//		.fail(function (error) {
-//			console.log(error);
+
 		.fail(error => console.error(error));
-//		});
+
 });
 
+$(document).on('submit', '.delete-card-form', function (e) {
+	e.preventDefault();
+	
+	$.ajax(this.action, { type: 'DELETE' })
+		.done(() => {
+			$(this)
+				.closest('li')
+				.remove();
+		})
+		
+		.fail(error => console.error(error));
+});
 
 $(document).on('submit', '#create-phone-form', function (e){
 	e.preventDefault();
@@ -182,15 +153,26 @@ $(document).on('submit', '#create-phone-form', function (e){
 	
 	$.ajax(this.action, ajaxOptions)
 		.done(function (data) {
-//			console.log(data);
+
 			fillInDetails(data);
 		})
 		
-		.fail(error => console.error(error));
-		
+		.fail(error => console.error(error));	
 	
 });
 
+$(document).on('submit', '.delete-phone-form', function (e) {
+	e.preventDefault();
+	
+	$.ajax(this.action, { type: 'DELETE' })
+		.done(() => {
+			$(this)
+				.closest('div')
+				.remove();
+		})
+		
+		.fail(error => console.error(error));
+});
 
 $(document).on('submit', '#create-address-form', function (e){
 	e.preventDefault();
@@ -211,26 +193,39 @@ $(document).on('submit', '#create-address-form', function (e){
 	
 	$.ajax(this.action, ajaxOptions)
 		.done(function (data) {
-//			console.log(data);
+
 			fillInDetails(data);
 		})
 		
-		.fail(error => console.error(error));
-		
+		.fail(error => console.error(error));	
 	
 });
 
-//Click Handler for the entire Webpage
+
+$(document).on('submit', '.delete-address-form', function (e) {
+	e.preventDefault();
+	
+	$.ajax(this.action, { type: 'DELETE' })
+		.done(() => {
+			$(this)
+				.closest('div')
+				.remove();
+		})
+		
+		.fail(error => console.error(error));
+});
+
+
+// Click Handler for the entire Webpage
 $(document).on('click', 'a[data-card-id]', function (e) {
-	// to prevent click event from following the Href #
+
 	e.preventDefault();
 	
 	const cardId = $(this).data('cardId');
 	
 	
-	
 	$.getJSON(baseurl + '/' + cardId, function (data) {
-// to set default when values are null
+
 		data.company = data.company || '<i>no company speified</i>';
 		fillInDetails(data);
 
