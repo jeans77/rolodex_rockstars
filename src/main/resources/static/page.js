@@ -17,7 +17,7 @@ function fillInDetails(data) {
 				<b>${phone.number}</b>
 			
 				<form class="delete-phone-form" method="post" action="/cards/${data.id}/phone/${phone.id}">
-					<button>Delete Phone</button
+					<button>Delete Phone</button>
 				</form>
 				
 			</div>
@@ -72,7 +72,7 @@ function fillInDetails(data) {
 			</form>
 			
 	`;
-
+console.log(html);
 	$('#card-detail').html(html);
 
 	
@@ -138,6 +138,7 @@ $(document).on('submit', '.delete-card-form', function (e) {
 });
 
 $(document).on('submit', '#create-phone-form', function (e){
+	console.log(e);
 	e.preventDefault();
 	
 	let payload = {
